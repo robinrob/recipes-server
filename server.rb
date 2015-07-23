@@ -1,38 +1,44 @@
-require 'sinatra'
 require 'JSON'
-require 'widget' # our imaginary widget model
+require 'sinatra'
+require 'sinatra/cross_origin'
+
+load 'recipe.rb'
+
+configure do
+  enable :cross_origin
+end
 
 # list all
-get '/widgets' do
-  Widget.all.to_json
+get '/recipes' do
+  Recipe.all.to_json
 end
 
 # view one
-get '/widgets/:id' do
-  widget = Widget.find(params[:id])
-  return status 404 if widget.nil?
-  widget.to_json
+get '/recipes/:id' do
+  record = Recipe.find(params[:id])
+  return status 404 if recipe.nil?
+  recipe.to_json
 end
 
 # create
-post '/widgets' do
-  widget = Widget.new(params['widget'])
-  widget.save
+post '/recipes' do
+  recipe = Recipe.new(params['recipe'])
+  recipe.save
   status 201
 end
 
 # update
-put '/widgets/:id' do
-  widget = Widget.find(params[:id])
-  return status 404 if widget.nil?
-  widget.update(params[:widget])
-  widget.save
+put '/recipes/:id' do
+  recipe = Recipe.find(params[:id])
+  return status 404 if recipe.nil?
+  recipe.update(params[:recipe])
+  recipe.save
   status 202
 end
 
-delete '/widgets/:id' do
-  widget = Widget.find(params[:id])
-  return status 404 if widget.nil?
-  widget.delete
+delete '/recipes/:id' do
+  recipe = Recipe.find(params[:id])
+  return status 404 if recipe.nil?
+  recipe.delete
   status 202
 end
