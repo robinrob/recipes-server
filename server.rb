@@ -4,9 +4,16 @@ require 'sinatra/cross_origin'
 
 load 'recipe.rb'
 
+before do
+  content_type :json
+end
+
 configure do
   enable :cross_origin
 end
+
+set :allow_origin, 'http://localhost:3000'
+set :allow_methods, [:get, :post]
 
 # list all
 get '/recipes' do
@@ -15,7 +22,10 @@ end
 
 # view one
 get '/recipes/:id' do
-  record = Recipe.find(params[:id])
+  cross_origin :allow_origin => 'http://localhost:3000',
+               :allow_methods => [:get]
+
+  recipe = Recipe.find(params[:id])
   return status 404 if recipe.nil?
   recipe.to_json
 end
