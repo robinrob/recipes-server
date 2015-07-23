@@ -17,6 +17,9 @@ set :allow_methods, [:get, :post]
 
 # list all
 get '/recipes' do
+  cross_origin :allow_origin => 'http://localhost:3000',
+               :allow_methods => [:get]
+
   Recipe.all.to_json
 end
 
