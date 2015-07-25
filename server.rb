@@ -12,12 +12,15 @@ configure do
   enable :cross_origin
 end
 
-set :allow_origin, 'http://localhost:3000'
-set :allow_methods, [:get, :post]
+url = '*'
+
+set :allow_origin, url
+set :allow_methods, [:get, :post, :put]
+
 
 # list all
 get '/recipes' do
-  cross_origin :allow_origin => 'http://localhost:3000',
+  cross_origin :allow_origin => url,
                :allow_methods => [:get]
 
   Recipe.all.to_json
@@ -25,7 +28,8 @@ end
 
 # view one
 get '/recipes/:id' do
-  cross_origin :allow_origin => 'http://localhost:3000',
+  puts "GET /recipes/:id"
+  cross_origin :allow_origin => url,
                :allow_methods => [:get]
 
   recipe = Recipe.find(params[:id])
@@ -35,18 +39,25 @@ end
 
 # create
 post '/recipes' do
-  recipe = Recipe.new(params['recipe'])
-  recipe.save
+  cross_origin :allow_origin => url,
+               :allow_methods => [:post]
+
+  data = JSON.parse request.body.read
+  Recipe.new(data[:recipe]).save
   status 201
 end
 
 # update
 put '/recipes/:id' do
+  puts 'PUT /recipes/:id'
+  cross_origin :allow_origin => url,
+               :allow_methods => [:put]
+
   recipe = Recipe.find(params[:id])
   return status 404 if recipe.nil?
-  recipe.update(params[:recipe])
-  recipe.save
-  status 202
+  data = JSON.parse request.body.read
+  recipe.update(data['recipe'])
+  status 200
 end
 
 delete '/recipes/:id' do
