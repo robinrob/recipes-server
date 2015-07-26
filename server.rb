@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'JSON'
 require 'sinatra'
 require 'sinatra/cross_origin'
@@ -12,7 +14,7 @@ configure do
   enable :cross_origin
 end
 
-url = '*'
+url = 'http://localhost:3000'
 
 set :allow_origin, url
 set :allow_methods, [:get, :post, :put]
@@ -49,9 +51,10 @@ end
 
 # update
 put '/recipes/:id' do
-  puts 'PUT /recipes/:id'
   cross_origin :allow_origin => url,
                :allow_methods => [:put]
+
+  puts 'PUT /recipes/:id'
 
   recipe = Recipe.find(params[:id])
   return status 404 if recipe.nil?
